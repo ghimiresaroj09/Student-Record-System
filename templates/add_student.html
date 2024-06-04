@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h3 class="text-center m-4">Add Student</h3>
+{% if success %}
+    <div class="alert alert-success" role="alert">
+    The new student added successfully
+    <a href="{% url 'index' %}" class="alert-link"> Go to Home Page</a>
+    </div>
+
+{% else %}
+
+   <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <form action="{% url 'add_student' %}" method="POST">
+                {% csrf_token %}
+                <fieldset>
+                    <legend><i class="fa-solid fa-id-card"></i>Student Registration</legend>
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label mt-4">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" autocomplete="off" REQUIRED>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label mt-4">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" autocomplete="off" REQUIRED>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label mt-4">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email" REQUIRED>
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="faculty" class="form-label mt-4">Faculty</label>
+                        <input type="text" class="form-control" id="faculty" name="faculty" placeholder="Faculty" autocomplete="off" REQUIRED>
+                    </div>
+                    <div class="mb-3">
+                        <label for="gpa" class="form-label mt-4">GPA</label>
+                        <input type="text" class="form-control" id="gpa" name="gpa" placeholder="GPA" autocomplete="off" REQUIRED>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Student</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock  %}
+    

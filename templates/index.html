@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <h3 class="m-4">All Students</h3>
+
+  <!-- Faculty Filter and Search Form -->
+  <form method="get" action="{% url 'index' %}" class="ms-4 me-4 mb-4">
+    <div class="input-group">
+      <select name="faculty" class="form-select me-2">
+        <option value="">All Faculties</option>
+        {% for faculty in faculties %}
+        <option value="{{ faculty }}" {% if request.GET.faculty == faculty %}selected{% endif %}>{{ faculty }}</option>
+        {% endfor %}
+      </select>
+      <input type="text" name="search_query" class="form-control" placeholder="Search" value="{{ request.GET.search_query }}">
+      <button type="submit" class="btn btn-primary ms-2">Filter</button>
+      <button type="button" class="btn btn-secondary ms-2" onclick="window.location.href='{% url 'index' %}'">Reset</button>
+    </div>
+  </form>
+
+  <div class="row">
+    <div class="col-12">
+      {% if students %}
+      <div class="card bg-light ms-4 me-4 mb-4">
+        <div class="card-header">
+          <i class="fa-solid fa-list fa-lg"></i> Students Record
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Faculty</th>
+                    <th scope="col">GPA</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in students %}
+                  <tr>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.first_name }}</td>
+                    <td>{{ student.last_name }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.faculty }}</td>
+                    <td>{{ student.gpa }}</td>
+                    <td>
+                      <!-- View Student Button -->
+                      <button type='button' class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#viewStudent{{ student.id }}">
+                        <i class="fa-solid fa-circle-info"></i>
+                      </button>
+
+                      <!-- Update Student Button -->
+                      <a class="btn btn-success me-1" href="{% url 'update_student' student.id %}">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </a>
+
+                      <!-- Delete Student Button -->
+                      <button type='button' class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudent{{ student.id }}">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </button>
+
+                      <!-- View Student Modal -->
+                      <div class="modal fade" id="viewStudent{{ student.id }}" tabindex="-1" aria-labelledby="viewStudentLabel{{ student.id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="viewStudentLabel{{ student.id }}">Student: {{ student.first_name }} {{ student.last_name }}</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <ul class="list-unstyled">
+                                <li>Student ID: <strong>{{ student.id }}</strong></li>
+                                <li>First Name: <strong>{{ student.first_name }}</strong></li>
+                                <li>Last Name: <strong>{{ student.last_name }}</strong></li>
+                                <li>Email: <strong>{{ student.email }}</strong></li>
+                                <li>Faculty: <strong>{{ student.faculty }}</strong></li>
+                                <li>GPA: <strong>{{ student.gpa }}</strong></li>
+                              </ul>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Delete Student Modal -->
+                      <div class="modal fade" id="deleteStudent{{ student.id }}" tabindex="-1" aria-labelledby="deleteStudentLabel{{ student.id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="deleteStudentLabel{{ student.id }}">Student: {{ student.first_name }} {{ student.last_name }}</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p>Are you sure you want to delete this student?</p>
+                            </div>
+                            <div class="modal-footer">
+                              <form method="post" action="{% url 'delete_student' student.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                              </form>
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </p>
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-danger ms-4 me-4">No Students Record</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
